@@ -49,6 +49,7 @@ jobs:
         with:
           token: ${{ secrets.DOC_BOT_TOKEN }}
           path: "gatsby-tutorial"
+          base: master
           branch: gh/docs-update-${{ steps.create-commit.outputs.DOCS_VERSION }}
       - name: Check PR creation outputs
         run: |
