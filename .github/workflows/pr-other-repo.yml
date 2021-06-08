@@ -1,10 +1,10 @@
-name: Action when tag pushed
+name: PR another repo with docs
 on:
   push:
     tags:
       - "v*"
 jobs:
-  Explore-GitHub-Actions:
+  build_docs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -13,7 +13,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Build documentation
         run: ./create-docs.sh
+      - name: List files in the docs folder
+        run: |
+          ls ${{ github.workspace }}/docs
+      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - name: Checkout target repository
+        uses: actions/checkout@v2
+        with:
+          repository: jeresuikkila/gatsby-tutorial
       - name: List files in the repository
         run: |
-          ls -R ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          ls ${{ github.workspace }}
