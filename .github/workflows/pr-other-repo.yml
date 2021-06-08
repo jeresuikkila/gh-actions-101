@@ -14,10 +14,10 @@ jobs:
         with:
           path: "gh-actions-101"
       - name: Build documentation
-        run: ./create-docs.sh
+        run: ./gh-actions-101/create-docs.sh
       - name: List files in the docs folder
         run: |
-          ls ${{ github.workspace }}/docs
+          ls ${{ github.workspace }}/gh-actions-101/docs
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
