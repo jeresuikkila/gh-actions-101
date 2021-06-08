@@ -41,6 +41,7 @@ jobs:
           cp -r ../gh-actions-101/docs .
           git add docs
           git commit -m "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
+          git push -u origin gh/docs-update-$DOCS_VERSION
       - name: Get docs version
         run: echo "The documentation version is ${{ steps.create-commit.outputs.DOCS_VERSION }}"
       - name: Create Pull Request
