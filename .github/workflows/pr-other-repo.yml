@@ -12,38 +12,27 @@ jobs:
         with:
           path: "gh-actions-101"
       - name: Build documentation
+        id: build-docs
         run: |
           cd gh-actions-101
           ./create-docs.sh
           cd ${{ github.workspace }}
-      - name: List files in the docs folder
-        run: |
-          ls ${{ github.workspace }}/gh-actions-101/docs
+          export DOCS_VERSION=$(echo ${{ github.ref }} | cut -d "/" -f3)
+          echo "::set-output name=DOCS_VERSION::$DOCS_VERSION"
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
           repository: jeresuikkila/gatsby-tutorial
           path: "gatsby-tutorial"
           token: ${{ secrets.DOC_BOT_TOKEN }}
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - name: Create new branch in target repository and copy documentation there
-        id: create-commit
+      - name: Copy documentation to target repository
         run: |
           cd gatsby-tutorial
           git config user.email "jere@suikkila.com"
           git config user.name "Github action"
-          export DOCS_VERSION=$(echo ${{ github.ref }} | cut -d "/" -f3)
-          echo $DOCS_VERSION
-          echo "::set-output name=DOCS_VERSION::$DOCS_VERSION"
-          git checkout -b gh/docs-update-$DOCS_VERSION
           cp -r ../gh-actions-101/docs .
-          git add docs
-          git commit -m "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
-          git push -u origin gh/docs-update-$DOCS_VERSION
       - name: Get docs version
-        run: echo "The documentation version is ${{ steps.create-commit.outputs.DOCS_VERSION }}"
+        run: echo "The documentation version is ${{ steps.build-docs.outputs.DOCS_VERSION }}"
       - name: Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v3
@@ -51,7 +40,9 @@ jobs:
           token: ${{ secrets.DOC_BOT_TOKEN }}
           path: "gatsby-tutorial"
           base: master
-          branch: gh/docs-update-${{ steps.create-commit.outputs.DOCS_VERSION }}
+          branch: gh/docs-update-${{ steps.build-docs.outputs.DOCS_VERSION }}
+          commit-message: "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
+          assignees: jeresuikkila
       - name: Check PR creation outputs
         run: |
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
