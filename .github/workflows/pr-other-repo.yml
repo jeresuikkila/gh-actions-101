@@ -30,8 +30,9 @@ jobs:
       - name: Create new branch in target repository and copy documentation there
         run: |
           cd gatsby-tutorial
+          git config user.email "jere@suikkila.com"
+          git config user.name "Github action"
           git checkout -b gh/docs-update-$(echo ${{ github.ref }} | cut -d "/" -f3)
-          git branch
           git branch --show-current
           cp -r ../gh-actions-101/docs .
           git commit -am "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
