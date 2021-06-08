@@ -42,7 +42,12 @@ jobs:
           base: master
           branch: gh/docs-update-${{ steps.build-docs.outputs.DOCS_VERSION }}
           commit-message: "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          delete-branch: true
           assignees: jeresuikkila
+          title: Update gh-actions-101 documentation to version ${{ steps.build-docs.outputs.DOCS_VERSION }}
       - name: Check PR creation outputs
         run: |
           echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
