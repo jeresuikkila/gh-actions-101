@@ -7,8 +7,6 @@ jobs:
   build_docs:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v2
         with:
@@ -36,4 +34,6 @@ jobs:
           git branch
           git branch --show-current
           cp -r ../gh-actions-101/docs .
+          git commit -am "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
+          git push
       - run: echo "🍏 This job's status is ${{ job.status }}."
