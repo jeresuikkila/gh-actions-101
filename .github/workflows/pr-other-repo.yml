@@ -11,16 +11,26 @@ jobs:
       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v2
+        with:
+          path: "gh-actions-101"
       - name: Build documentation
         run: ./create-docs.sh
       - name: List files in the docs folder
         run: |
           ls ${{ github.workspace }}/docs
-      - run: echo "🍏 This job's status is ${{ job.status }}."
       - name: Checkout target repository
         uses: actions/checkout@v2
         with:
           repository: jeresuikkila/gatsby-tutorial
+          path: "gatsby-tutorial"
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
+      - name: Create new branch in target repository and copy documentation there
+        run: |
+          cd gatsby-tutorial
+          git checkout -b gh/docs-update-$(echo ${{ github.ref }} | cut -d "/" -f3)
+          git branch
+          git branch --show-current
+          cp -r ../gh-actions-101/docs .
+      - run: echo "🍏 This job's status is ${{ job.status }}."
