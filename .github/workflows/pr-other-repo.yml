@@ -24,7 +24,7 @@ jobs:
         with:
           repository: jeresuikkila/gatsby-tutorial
           path: "gatsby-tutorial"
-          token: { { secrets.DOC_BOT_TOKEN } }
+          token: ${{ secrets.DOC_BOT_TOKEN }}
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
