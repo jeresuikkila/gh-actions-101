@@ -37,5 +37,5 @@ jobs:
           cp -r ../gh-actions-101/docs .
           git add docs
           git commit -m "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
-          git push
+          git push -u origin gh/docs-update-$(echo ${{ github.ref }} | cut -d "/" -f3)
       - run: echo "🍏 This job's status is ${{ job.status }}."
