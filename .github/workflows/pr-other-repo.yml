@@ -29,16 +29,29 @@ jobs:
         run: |
           ls ${{ github.workspace }}
       - name: Create new branch in target repository and copy documentation there
+        id: create-commit
         run: |
           cd gatsby-tutorial
           git config user.email "jere@suikkila.com"
           git config user.name "Github action"
           export DOCS_VERSION=$(echo ${{ github.ref }} | cut -d "/" -f3)
           echo $DOCS_VERSION
-          git checkout -b gh/docs-update-$(echo ${{ github.ref }} | cut -d "/" -f3)
-          git branch --show-current
+          echo "::set-output name=DOCS_VERSION::$DOCS_VERSION"
+          git checkout -b gh/docs-update-$DOCS_VERSION
           cp -r ../gh-actions-101/docs .
           git add docs
           git commit -m "GitHub action created this commit automatically based on ${{ github.repository }}/${{ github.ref }} ${{ github.event_name }} event."
-          git push -u origin gh/docs-update-$(echo ${{ github.ref }} | cut -d "/" -f3)
+      - name: Get docs version
+        run: echo "The documentation version is ${{ steps.create-commit.outputs.DOCS_VERSION }}"
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.DOC_BOT_TOKEN }}
+          path: "gatsby-tutorial"
+          branch: gh/docs-update-${{ steps.create-commit.outputs.DOCS_VERSION }}
+      - name: Check PR creation outputs
+        run: |
+          echo "Pull Request Number - ${{ steps.cpr.outputs.pull-request-number }}"
+          echo "Pull Request URL - ${{ steps.cpr.outputs.pull-request-url }}"
       - run: echo "🍏 This job's status is ${{ job.status }}."
