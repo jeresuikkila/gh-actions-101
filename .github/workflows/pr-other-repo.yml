@@ -24,6 +24,7 @@ jobs:
         with:
           repository: jeresuikkila/gatsby-tutorial
           path: "gatsby-tutorial"
+          token: { { secrets.DOC_BOT_TOKEN } }
       - name: List files in the repository
         run: |
           ls ${{ github.workspace }}
@@ -33,7 +34,7 @@ jobs:
           git config user.email "jere@suikkila.com"
           git config user.name "Github action"
           export DOCS_VERSION=$(echo ${{ github.ref }} | cut -d "/" -f3)
-          echo DOCS_VERSION
+          echo $DOCS_VERSION
           git checkout -b gh/docs-update-$(echo ${{ github.ref }} | cut -d "/" -f3)
           git branch --show-current
           cp -r ../gh-actions-101/docs .
